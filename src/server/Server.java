@@ -1,5 +1,11 @@
 package server;
 
+import server.connection.Connection;
+import server.connection.DataPack;
+import server.connection.Message;
+import server.game.Player;
+import server.game.SerializableGameField;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -42,7 +48,7 @@ public class Server implements Runnable{
             try {
                 synchronized (gameField){
                     gameField.move();
-                    connection.send(new DataPack(gameField.getGameObjects()));
+                    connection.send(DataPack.extractDataPackFormGameField(gameField));
                     gameField.notify();
                 }
                 Thread.sleep(10);
@@ -58,12 +64,11 @@ public class Server implements Runnable{
                 Object received = connection.receive();
                 if (received instanceof Message) {
                     Message message = (Message) received;
-                    switch (message.getType()) {
+                    switch (message) {
                         case NEW:
-                            connection.send(new Message(Message.MessageType.CONFIRM));
+                            connection.send(Message.CONFIRM);
                             break;
                         case ASK_FOR_GAME_FIELD:
-                            connection.send(gameField);
                             return true;
                     }
                 }

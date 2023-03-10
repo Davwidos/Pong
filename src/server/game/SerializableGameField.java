@@ -1,15 +1,13 @@
-package server;
+package server.game;
 
 import constants.Constants;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class SerializableGameField implements Serializable {
-
     protected Player localPlayer;
     protected Player remotePlayer;
     protected Ball ball;
@@ -38,6 +36,13 @@ public class SerializableGameField implements Serializable {
     public void move(){
         if(ball.checkCollisions(localPlayer)) ball.setDirection(Ball.Direction.RIGHT);
         if(ball.checkCollisions(remotePlayer)) ball.setDirection(Ball.Direction.LEFT);
+        if(ball.checkOnXBorderCollisions()){
+            switch (Side.getSideOfObject(ball)){
+                case LEFT:remotePlayer.incrementScore();break;
+                case RIGHT:localPlayer.incrementScore();break;
+            }
+            setUpDefaultGameField();
+        }
         ball.move();
         localPlayer.move();
         remotePlayer.move();
@@ -51,5 +56,6 @@ public class SerializableGameField implements Serializable {
         localPlayer.setRectangle(new Rectangle(0,0,20,60));
         remotePlayer.setRectangle(new Rectangle(Constants.WIDTH-20,0,20,60));
         ball.setRectangle(new Rectangle(20,0,20,20));
+        ball.setDirection(Ball.Direction.RIGHT);
     }
 }

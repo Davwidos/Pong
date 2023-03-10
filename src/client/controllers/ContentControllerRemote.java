@@ -1,29 +1,30 @@
 package client.controllers;
 
 import client.view.Content;
-import server.*;
+import server.connection.Connection;
+import server.connection.DataPack;
+import server.connection.Message;
+import server.game.Player;
 
-import javax.swing.text.GapContent;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 public class ContentControllerRemote extends ContentController{
-    private Connection connection;
+    private final Connection connection;
     protected ContentControllerRemote(Content contentView,Connection connection, Controller mainController) throws IOException, ClassNotFoundException {
         super(contentView, mainController);
         this.connection = connection;
         while (!establishConnection());
         startReceiverThread();
-        connection.send(new Message(Message.MessageType.ASK_FOR_GAME_FIELD));
+        connection.send(Message.ASK_FOR_GAME_FIELD);
         mainController.showGame();
 
     }
     private boolean establishConnection() throws IOException, ClassNotFoundException {
-        connection.send(new Message(Message.MessageType.NEW));
+        connection.send(Message.NEW);
             Object received = connection.receive();
             if(received instanceof Message) {
                 Message message = (Message) received;
-                if(message.getType().equals(Message.MessageType.CONFIRM)) return true;
+                return message.equals(Message.CONFIRM);
             }
         return false;
     }
@@ -33,11 +34,10 @@ public class ContentControllerRemote extends ContentController{
                 try {
                     Object received = connection.receive();
                     if(received instanceof DataPack){
-                        contentView.update(((DataPack)received).getData());
+                        DataPack dataPack = (DataPack)received;
+                        contentView.update(dataPack.getData(),dataPack.getScoreOfLocalPlayer(),dataPack.getScoreOFRemotePlayer());
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } catch (ClassNotFoundException e) {
+                } catch (IOException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
 

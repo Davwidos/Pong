@@ -1,4 +1,4 @@
-package server;
+package server.game;
 
 import java.awt.*;
 import java.util.Objects;
@@ -20,6 +20,7 @@ public class Player extends SerializableGameObject{
     private static int CURRENT_ID = 0;
     private final int id;
     private Direction direction;
+    private int score;
     public Player(Rectangle rectangle) {
         super(rectangle);
         setDirection(Direction.DOWN);
@@ -34,6 +35,15 @@ public class Player extends SerializableGameObject{
         this.direction = direction;
         setDirection(direction.getAngle());
     }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void incrementScore(){
+        score++;
+    }
+
     public void setOppositeDirection(){
         switch (direction){
             case UP : setDirection(Direction.DOWN);break;

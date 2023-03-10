@@ -2,8 +2,7 @@ package client.controllers;
 
 import client.view.Content;
 import client.view.Menu;
-import server.Connection;
-import server.Server;
+import server.connection.Connection;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

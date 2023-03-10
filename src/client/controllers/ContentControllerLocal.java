@@ -1,11 +1,11 @@
 package client.controllers;
 
 import client.view.Content;
-import server.Player;
-import server.SerializableGameField;
+import server.connection.DataPack;
+import server.game.Player;
+import server.game.SerializableGameField;
 import server.Server;
 
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 public class ContentControllerLocal extends ContentController {
@@ -16,7 +16,8 @@ public class ContentControllerLocal extends ContentController {
                 synchronized (gameField){
                     try {
                         gameField.wait();
-                        contentView.update(gameField.getGameObjects());
+                        DataPack dataPack = DataPack.extractDataPackFormGameField(gameField);
+                        contentView.update(dataPack.getData(),dataPack.getScoreOfLocalPlayer(),dataPack.getScoreOFRemotePlayer());
                     } catch (InterruptedException e) {
                         break;
                     }

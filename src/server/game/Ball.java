@@ -1,4 +1,4 @@
-package server;
+package server.game;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -6,7 +6,7 @@ public class Ball extends SerializableGameObject{
     public static enum Direction{
         LEFT(180),
         RIGHT(0);
-        private double angle;
+        private final double angle;
         Direction(int angle){
             this.angle = angle;
         }
@@ -27,18 +27,11 @@ public class Ball extends SerializableGameObject{
 
     @Override
     public void move() {
-        if(checkOnXBorderCollisions()) reflectionOnX();
-        if(checkOnYBorderCollisions()) reflectionOnY();
+        if(checkOnYBorderCollisions()) reflection();
         super.move();
     }
     //temporary method
-    private void reflectionOnX(){
-        switch (direction){
-            case RIGHT : setDirection(Direction.LEFT);break;
-            case LEFT : setDirection(Direction.RIGHT);break;
-        }
-    }
-    private void reflectionOnY(){
+    private void reflection(){
         setDirection(-getDirection());
     }
 

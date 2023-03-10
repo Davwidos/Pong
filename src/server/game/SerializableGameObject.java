@@ -1,4 +1,4 @@
-package server;
+package server.game;
 
 import constants.Constants;
 
@@ -33,7 +33,7 @@ public abstract class SerializableGameObject implements Serializable {
         else this.direction = direction;
     }
 
-    public double getDirection() {
+    protected double getDirection() {
         return direction;
     }
 
